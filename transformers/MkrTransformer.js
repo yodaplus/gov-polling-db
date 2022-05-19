@@ -1,8 +1,10 @@
 const {
   getExtractorName,
-} = require("spock-etl/lib/core/processors/extractors//instances/rawEventDataExtractor");
-const { handleEvents } = require("spock-etl/lib/core/processors/transformers/common");
-const { getLogger } = require("spock-etl/lib/core/utils/logger");
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors//instances/rawEventDataExtractor");
+const {
+  handleEvents,
+} = require("@yodaplus/spock-etl/lib/core/processors/transformers/common");
+const { getLogger } = require("@yodaplus/spock-etl/lib/core/utils/logger");
 const BigNumber = require("bignumber.js").BigNumber;
 
 // @ts-ignore
@@ -10,7 +12,7 @@ const abi = require("../abis/mkr_abi.json");
 
 const logger = getLogger("MKR");
 
-module.exports = mkrAddress => ({
+module.exports = (mkrAddress) => ({
   name: "MKR_Transformer",
   dependencies: [getExtractorName(mkrAddress)],
   transform: async (services, logs) => {
@@ -21,13 +23,15 @@ module.exports = mkrAddress => ({
 const handlers = {
   async Transfer(services, info) {
     const sql = `INSERT INTO mkr.transfer_event
-    (sender,receiver,amount,log_index,tx_id,block_id) 
+    (sender,receiver,amount,log_index,tx_id,block_id)
     VALUES(\${sender}, \${receiver}, \${value}, \${log_index}, \${tx_id}, \${block_id});`;
 
     await services.tx.none(sql, {
       sender: info.event.params.from.toLowerCase(),
       receiver: info.event.params.to.toLowerCase(),
-      value: new BigNumber(info.event.params.value).div(new BigNumber("1e18")).toString(),
+      value: new BigNumber(info.event.params.value)
+        .div(new BigNumber("1e18"))
+        .toString(),
 
       log_index: info.log.log_index,
       tx_id: info.log.tx_id,

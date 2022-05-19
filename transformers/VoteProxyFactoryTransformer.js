@@ -1,11 +1,15 @@
-const { getExtractorName } = require("spock-etl/lib/core/processors/extractors/instances/rawEventDataExtractor");
+const {
+  getExtractorName,
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors/instances/rawEventDataExtractor");
 
-const { handleEvents } = require("spock-etl/lib/core/processors/transformers/common");
+const {
+  handleEvents,
+} = require("@yodaplus/spock-etl/lib/core/processors/transformers/common");
 
 // @ts-ignore
 const abi = require("../abis/vote_proxy_factory.json");
 
-module.exports = (voteProxyFactoryAddress, nameSuffix = '') => ({
+module.exports = (voteProxyFactoryAddress, nameSuffix = "") => ({
   name: `Vote_proxy_factory_transformer${nameSuffix}`,
   dependencies: [getExtractorName(voteProxyFactoryAddress)],
   transform: async (services, logs) => {
@@ -16,7 +20,7 @@ module.exports = (voteProxyFactoryAddress, nameSuffix = '') => ({
 const handlers = {
   async LinkConfirmed(services, info) {
     const sql = `INSERT INTO dschief.vote_proxy_created_event
-    (cold,hot,vote_proxy,log_index,tx_id,block_id) 
+    (cold,hot,vote_proxy,log_index,tx_id,block_id)
     VALUES(\${cold}, \${hot}, \${vote_proxy}, \${log_index}, \${tx_id}, \${block_id});`;
 
     await services.tx.none(sql, {

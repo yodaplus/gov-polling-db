@@ -1,10 +1,10 @@
 const {
   getExtractorName,
-} = require("spock-etl/lib/core/processors/extractors//instances/rawEventDataExtractor");
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors//instances/rawEventDataExtractor");
 const {
   handleEvents,
-} = require("spock-etl/lib/core/processors/transformers/common");
-const { getLogger } = require("spock-etl/lib/core/utils/logger");
+} = require("@yodaplus/spock-etl/lib/core/processors/transformers/common");
+const { getLogger } = require("@yodaplus/spock-etl/lib/core/utils/logger");
 const BigNumber = require("bignumber.js").BigNumber;
 
 // @ts-ignore
@@ -20,24 +20,24 @@ async function processRow(db, { from, to, value, tx_id, block_id }) {
   const sql = `
     insert into mkr.balances (address, amount, tx_id, block_id)
     values(
-      $(receiver), 
+      $(receiver),
       $(amount)::${amountColumnType} + coalesce((
         select amount from mkr.balances
         where address = $(receiver)
         order by id desc limit 1
-      ), 0), 
-      $(tx_id), 
+      ), 0),
+      $(tx_id),
       $(block_id)
     );
     insert into mkr.balances (address, amount, tx_id, block_id)
     values(
-      $(sender), 
+      $(sender),
       -1 * $(amount)::${amountColumnType} + coalesce((
         select amount from mkr.balances
         where address = $(sender)
         order by id desc limit 1
-      ), 0), 
-      $(tx_id), 
+      ), 0),
+      $(tx_id),
       $(block_id)
     )
   `;

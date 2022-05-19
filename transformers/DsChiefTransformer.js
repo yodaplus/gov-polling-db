@@ -1,13 +1,17 @@
 const {
   getExtractorName,
-} = require("spock-etl/lib/core/processors/extractors/instances/rawEventDataExtractor");
-const { handleDsNoteEvents } = require("spock-etl/lib/core/processors/transformers/common");
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors/instances/rawEventDataExtractor");
+const {
+  handleDsNoteEvents,
+} = require("@yodaplus/spock-etl/lib/core/processors/transformers/common");
 // @ts-ignore
 const dsChiefAbi = require("../abis/ds_chief.json");
-const { getTxByIdOrDie } = require("spock-etl/lib/core/processors/extractors/common");
+const {
+  getTxByIdOrDie,
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors/common");
 const BigNumber = require("bignumber.js").BigNumber;
 
-module.exports = (address, nameSuffix = '') => ({
+module.exports = (address, nameSuffix = "") => ({
   name: `DsChiefTransformer${nameSuffix}`,
   dependencies: [getExtractorName(address)],
   transform: async (services, logs) => {
@@ -29,7 +33,7 @@ const handlers = {
       contractAddress: log.address,
       txId: log.tx_id,
       blockId: log.block_id,
-      logIndex: log.log_index
+      logIndex: log.log_index,
     });
   },
   "lock(uint256)": async (services, { log, note }) => {
@@ -38,7 +42,9 @@ const handlers = {
     await insertLock(services, {
       fromAddress: tx.from_address,
       immediateCaller: note.caller,
-      lock: new BigNumber(note.params.wad).div(new BigNumber("1e18")).toString(),
+      lock: new BigNumber(note.params.wad)
+        .div(new BigNumber("1e18"))
+        .toString(),
       contractAddress: log.address,
       txId: log.tx_id,
       blockId: log.block_id,
@@ -51,6 +57,6 @@ const insertLock = (s, values) => {
   return s.tx.none(
     `
 INSERT INTO dschief.lock(contract_address, from_address, immediate_caller, lock, log_index, tx_id, block_id) VALUES (\${contractAddress}, \${fromAddress}, \${immediateCaller}, \${lock}, \${logIndex}, \${txId}, \${blockId})`,
-    values,
+    values
   );
 };

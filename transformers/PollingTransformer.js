@@ -1,36 +1,33 @@
 const {
   handleEvents,
-} = require('spock-etl/lib/core/processors/transformers/common');
+} = require("@yodaplus/spock-etl/lib/core/processors/transformers/common");
 const {
   getExtractorName,
-} = require('spock-etl/lib/core/processors/extractors/instances/rawEventDataExtractor');
-const { getLogger } = require('spock-etl/lib/core/utils/logger');
-const BigNumber = require('bignumber.js').BigNumber;
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors/instances/rawEventDataExtractor");
+const { getLogger } = require("@yodaplus/spock-etl/lib/core/utils/logger");
+const BigNumber = require("bignumber.js").BigNumber;
 
 // @ts-ignore
-const abi = require('../abis/polling_emitter.json');
+const abi = require("../abis/polling_emitter.json");
 
-const logger = getLogger('Polling');
+const logger = getLogger("Polling");
 
 const authorizedCreators = process.env.AUTHORIZED_CREATORS
-  ? process.env.AUTHORIZED_CREATORS.split(',').map((creator) =>
-      creator.toLowerCase(),
+  ? process.env.AUTHORIZED_CREATORS.split(",").map((creator) =>
+      creator.toLowerCase()
     )
   : [];
 
 // TODO
-module.exports.VOTING_CONTRACT_GOERLI_ADDRESS =
-  '0xdbE5d00b2D8C13a77Fb03Ee50C87317dbC1B15fb';
-module.exports.VOTING_CONTRACT_KOVAN_ADDRESS =
-  '0x518a0702701BF98b5242E73b2368ae07562BEEA3';
+module.exports.VOTING_CONTRACT_APOTHEM_ADDRESS =
+  "0x5EB446De6b83417662f1D4c0c34a687461A487A1";
 module.exports.VOTING_CONTRACT_ADDRESS =
-  '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D';
+  "0x5EB446De6b83417662f1D4c0c34a687461A487A1";
 
 module.exports.default = (address) => ({
   name:
     address === module.exports.VOTING_CONTRACT_ADDRESS ||
-    address === module.exports.VOTING_CONTRACT_KOVAN_ADDRESS ||
-    address === module.exports.VOTING_CONTRACT_GOERLI_ADDRESS
+    address === module.exports.VOTING_CONTRACT_APOTHEM_ADDRESS
       ? `Polling_Transformer`
       : `Polling_Transformer_${address}`,
   dependencies: [getExtractorName(address)],
@@ -43,15 +40,12 @@ const handlers = {
   async PollCreated(services, info) {
     if (
       info.event.address.toLowerCase() !==
-        module.exports.VOTING_CONTRACT_KOVAN_ADDRESS.toLowerCase() &&
+        module.exports.VOTING_CONTRACT_APOTHEM_ADDRESS.toLowerCase() &&
       info.event.address.toLowerCase() !==
-        module.exports.VOTING_CONTRACT_ADDRESS.toLowerCase() &&
-      // goerli uses batch polling contract for creating polls
-      info.event.address.toLowerCase() !==
-        module.exports.VOTING_CONTRACT_GOERLI_ADDRESS.toLowerCase()
+        module.exports.VOTING_CONTRACT_ADDRESS.toLowerCase()
     ) {
       logger.info(
-        `Ignoring PollCreated event because ${info.event.address} is not the primary voting contract`,
+        `Ignoring PollCreated event because ${info.event.address} is not the primary voting contract`
       );
       return;
     }
@@ -62,7 +56,7 @@ const handlers = {
       !authorizedCreators.includes(creator.toLowerCase())
     ) {
       logger.info(
-        `Ignoring PollCreated event because ${creator} is not in the whitelist ${authorizedCreators}`,
+        `Ignoring PollCreated event because ${creator} is not in the whitelist ${authorizedCreators}`
       );
       return;
     }
@@ -74,13 +68,13 @@ const handlers = {
       !isValidPositivePostgresIntegerValue(info.event.params.pollId)
     ) {
       logger.warn(
-        `Ignoring PollCreated event from ${creator} because of failing validation.`,
+        `Ignoring PollCreated event from ${creator} because of failing validation.`
       );
       return;
     }
 
     const sql = `INSERT INTO polling.poll_created_event
-    (creator,block_created,poll_id,start_date,end_date,multi_hash,url,log_index,tx_id,block_id) 
+    (creator,block_created,poll_id,start_date,end_date,multi_hash,url,log_index,tx_id,block_id)
     VALUES(\${creator}, \${block_created}, \${poll_id}, \${start_date}, \${end_date}, \${multi_hash}, \${url}, \${log_index}, \${tx_id}, \${block_id});`;
     await services.tx.none(sql, {
       creator,
@@ -100,15 +94,12 @@ const handlers = {
   async PollWithdrawn(services, info) {
     if (
       info.event.address.toLowerCase() !==
-        module.exports.VOTING_CONTRACT_KOVAN_ADDRESS.toLowerCase() &&
+        module.exports.VOTING_CONTRACT_APOTHEM_ADDRESS.toLowerCase() &&
       info.event.address.toLowerCase() !==
-        module.exports.VOTING_CONTRACT_ADDRESS.toLowerCase() &&
-      // goerli uses batch polling contract for withdrawing polls
-      info.event.address.toLowerCase() !==
-        module.exports.VOTING_CONTRACT_GOERLI_ADDRESS.toLowerCase()
+        module.exports.VOTING_CONTRACT_ADDRESS.toLowerCase()
     ) {
       logger.info(
-        `Ignoring PollWithdrawn event because ${info.event.address} is not the primary voting contract`,
+        `Ignoring PollWithdrawn event because ${info.event.address} is not the primary voting contract`
       );
       return;
     }
@@ -123,13 +114,13 @@ const handlers = {
     ) {
       logger.warn(
         // prettier-ignore
-        `Ignoring PollWithdrawn event from ${creator} because of failing validation.`,
+        `Ignoring PollWithdrawn event from ${creator} because of failing validation.`
       );
       return;
     }
 
     const sql = `INSERT INTO polling.poll_withdrawn_event
-    (creator,block_withdrawn,poll_id,log_index,tx_id,block_id) 
+    (creator,block_withdrawn,poll_id,log_index,tx_id,block_id)
     VALUES(\${creator}, \${block_withdrawn}, \${poll_id}, \${log_index}, \${tx_id}, \${block_id});`;
     await services.tx.none(sql, {
       creator,
@@ -145,7 +136,7 @@ const handlers = {
   async Voted(services, info) {
     if (!isValidPositivePostgresIntegerValue(info.event.params.pollId)) {
       logger.warn(
-        `Ignoring Voted event from ${info.event.params.voter.toLowerCase()} because of failing validation.`,
+        `Ignoring Voted event from ${info.event.params.voter.toLowerCase()} because of failing validation.`
       );
       return;
     }
@@ -159,7 +150,7 @@ const handlers = {
     }
 
     const sql = `INSERT INTO polling.voted_event
-    (voter,poll_id,option_id,option_id_raw,log_index,tx_id,block_id) 
+    (voter,poll_id,option_id,option_id_raw,log_index,tx_id,block_id)
     VALUES(\${voter}, \${poll_id}, \${option_id}, \${option_id_raw}, \${log_index}, \${tx_id}, \${block_id});`;
     await services.tx.none(sql, {
       voter: info.event.params.voter.toLowerCase(),
@@ -175,7 +166,7 @@ const handlers = {
 };
 
 function isValidPositivePostgresIntegerValue(_input) {
-  const maxInt = new BigNumber('2147483647');
+  const maxInt = new BigNumber("2147483647");
   const input = new BigNumber(_input);
 
   return input.lt(maxInt) && input.gte(0);

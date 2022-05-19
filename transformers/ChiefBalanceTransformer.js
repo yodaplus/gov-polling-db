@@ -1,10 +1,10 @@
 const {
   getExtractorName,
-} = require("spock-etl/lib/core/processors/extractors//instances/rawEventDataExtractor");
+} = require("@yodaplus/spock-etl/lib/core/processors/extractors//instances/rawEventDataExtractor");
 const {
   handleDsNoteEvents,
-} = require("spock-etl/lib/core/processors/transformers/common");
-const { getLogger } = require("spock-etl/lib/core/utils/logger");
+} = require("@yodaplus/spock-etl/lib/core/processors/transformers/common");
+const { getLogger } = require("@yodaplus/spock-etl/lib/core/utils/logger");
 const BigNumber = require("bignumber.js").BigNumber;
 // @ts-ignore
 const dsChiefAbi = require("../abis/ds_chief.json");
@@ -15,13 +15,13 @@ async function processRow(db, { caller, wad, tx_id, block_id }) {
   const sql = `
     insert into dschief.balances (address, amount, tx_id, block_id)
     values(
-      $(address), 
+      $(address),
       $(amount)::${amountColumnType} + coalesce((
         select amount from dschief.balances
         where address = $(address)
         order by id desc limit 1
-      ), 0), 
-      $(tx_id), 
+      ), 0),
+      $(tx_id),
       $(block_id)
     );
   `;
@@ -57,7 +57,7 @@ const handlers = {
   ) => processRow(services.tx, { caller, wad, tx_id, block_id }),
 };
 
-module.exports = (mkrAddress, nameSuffix = '') => ({
+module.exports = (mkrAddress, nameSuffix = "") => ({
   name: `ChiefBalanceTransformer${nameSuffix}`,
   dependencies: [getExtractorName(mkrAddress)],
   transform: async (services, logs) => {
