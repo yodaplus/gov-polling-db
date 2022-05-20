@@ -29,11 +29,15 @@ services:
       - '443:443'
 
   app:
+    depends_on:
+      - etl
     environment:
       <<: *common-env
     command: ./scripts/start_api.sh
 
   etl:
+    depends_on:
+      - db
     environment:
       <<: *common-env
     command: ./scripts/start_etl.sh
