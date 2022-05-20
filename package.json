@@ -11,7 +11,9 @@
     "start-api": "node -r ./loadenv.js ./node_modules/@yodaplus/spock-etl/lib/core/runner.js api ./config.js",
     "test": "jest",
     "test:ci": "./tests/run-tests.sh",
-    "repl": "node --experimental-repl-await -r ./loadenv.js ./repl"
+    "repl": "node --experimental-repl-await -r ./loadenv.js ./repl",
+    "docker": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml -f infra/docker-compose.dev.yml  --project-name gov-polling-db   --project-directory ./",
+    "ecs": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.tags.yml -f infra/docker-compose.ecs.yml -f infra/docker-compose.ecs-staging.yml  --project-name gov-polling-db   --project-directory ./"
   },
   "dependencies": {
     "dotenv-flow": "^2.0.0",
