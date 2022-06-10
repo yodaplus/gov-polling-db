@@ -13,14 +13,14 @@ const esmTransformer = require("./transformers/EsmTransformer");
 const voteDelegateFactoryTransformer = require("./transformers/VoteDelegateFactoryTransformer");
 
 //mainnet
-const MKR_ADDRESS = "0xB643d716608ba491dC50D4fc414B1530b2aE32E4";
+const MKR_ADDRESS = "0xBE83B14835daD188c713e1F2A300bf46fd1bcEBE";
 const VOTING_CONTRACT_ADDRESS =
   pollingTransformerImport.VOTING_CONTRACT_ADDRESS;
-const DSCHIEF_ADDRESS = "0x4796dC3110bc1db8064910485b6c21451ff8f285";
-const VOTE_PROXY_FACTORY_ADDRESS = "0xfC9D474Cf20188ED02BBE01e6374Cd0F2955E386";
-const ESM_ADDRESS = "0xC486Fd2F80Dbe562C66Cee3A4D5a745Db7D3807d";
+const DSCHIEF_ADDRESS = "0xD78F0d4B884C7D3Ba644A1b249CE913E1AD895D3";
+const VOTE_PROXY_FACTORY_ADDRESS = "0xDed66a1a53eaAf3AAec1D7F53028e84de45Af773";
+const ESM_ADDRESS = "0x68199D8330b4Fba1B4C2e0638760DBdD0C46fa6C";
 const VOTE_DELEGATE_FACTORY_ADDRESS =
-  "0x40eA527Bd8b57a178B9F432279bc3b06C730BEb9";
+  "0xB55Bf3aDC61511923a1A88D345e01b293e1DC4f6";
 
 //apothem
 const MKR_ADDRESS_APOTHEM = "0xB643d716608ba491dC50D4fc414B1530b2aE32E4";
@@ -70,7 +70,7 @@ const apothem = {
 };
 
 const mainnet = {
-  startingBlock: 32463262,
+  startingBlock: 46228969,
   extractors: [
     ...makeRawLogExtractors([
       MKR_ADDRESS,

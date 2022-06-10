@@ -1,9 +1,0 @@
-version: '3.8'
-
-x-aws-cloudformation:
-  Resources:
-    NginxTCP443Listener:
-      Properties:
-        Certificates:
-          - CertificateArn: 'arn:aws:acm:ap-south-1:135135176603:certificate/5e26bb1d-4dc2-48f7-811c-3b32a5913746'
-        Protocol: HTTPS

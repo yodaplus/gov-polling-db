@@ -22,7 +22,7 @@ const authorizedCreators = process.env.AUTHORIZED_CREATORS
 module.exports.VOTING_CONTRACT_APOTHEM_ADDRESS =
   "0x5EB446De6b83417662f1D4c0c34a687461A487A1";
 module.exports.VOTING_CONTRACT_ADDRESS =
-  "0x5EB446De6b83417662f1D4c0c34a687461A487A1";
+  "0x908aF4d1E7CA522aeee927F66ec5c87E84c351C5";
 
 module.exports.default = (address) => ({
   name:
