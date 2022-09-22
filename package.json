@@ -12,8 +12,8 @@
     "test": "jest",
     "test:ci": "./tests/run-tests.sh",
     "repl": "node --experimental-repl-await -r ./loadenv.js ./repl",
-    "docker": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml -f infra/docker-compose.dev.yml  --project-name gov-polling-db   --project-directory ./",
-    "ecs-apothem": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.tags-apothem.yml -f infra/docker-compose.ecs.yml -f infra/docker-compose.ecs-apothem.yml  --project-name gov-polling-db-apothem   --project-directory ./",
+    "docker": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml -f infra/docker-compose.dev.yml  --project-name usxd-gov-polling-db   --project-directory ./",
+    "ecs-apothem": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.tags-apothem.yml -f infra/docker-compose.ecs.yml -f infra/docker-compose.ecs-apothem.yml  --project-name usxd-gov-polling-db-apothem   --project-directory ./",
     "ecs-mainnet": "docker compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.tags-mainnet.yml -f infra/docker-compose.ecs.yml -f infra/docker-compose.ecs-mainnet.yml  --project-name gov-polling-db-mainnet   --project-directory ./"
   },
   "dependencies": {

@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   nginx:
-    image: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/polling-db-gov-nginx:latest
+    image: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/usxd-polling-db-gov-nginx:latest
 
   app:
-    image: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/polling-db-gov-app:latest
+    image: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/usxd-polling-db-gov-app:latest
 
   etl:
-    image: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/polling-db-gov-app:latest
+    image: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/usxd-polling-db-gov-app:latest
